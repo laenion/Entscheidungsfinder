@@ -1,0 +1,27 @@
+<project name="Entscheidungsfinder" default="dist" basedir=".">
+	<property name="version" value="1.0" />
+	<property name="src" location="." />
+	<property name="build" location="build" />
+	<property name="dist"  location="dist" />
+
+	<target name="compile">
+		<mkdir dir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}" includeAntRuntime="false" target="1.2" />
+	</target>
+
+	<target name="dist" depends="compile">
+		<mkdir dir="${dist}" />
+		<jar jarfile="${dist}/Entscheidungsfinder.jar" basedir="${build}">
+			<manifest>
+				<attribute name="Main-Class" value="Entscheidungsfinder" />
+				<attribute name="Codebase" value="*" />
+				<attribute name="Permissions" value="sandbox" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+</project>
