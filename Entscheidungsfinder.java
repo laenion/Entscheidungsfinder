@@ -40,15 +40,15 @@ import javax.swing.border.EmptyBorder;
 /**
  * @author Ignaz Forster
  */
-public class Entscheidungsfinder extends JFrame implements ActionListener {
+public class Entscheidungsfinder extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPanel;
-	private JScrollPane pane;
+	private final JPanel contentPanel;
+	private final JScrollPane pane;
 	private int x;
-	private JPanel inputPanel;
+	private final JPanel inputPanel;
 	private JPanel resultPanel;
-	private JButton mainButton;
+	private final JButton mainButton;
 	
 	
 	Entscheidungsfinder() {
@@ -77,7 +77,7 @@ public class Entscheidungsfinder extends JFrame implements ActionListener {
 		
 		mainButton = new JButton("Was soll ich tun?");
 		mainButton.setMnemonic(KeyEvent.VK_W);
-		mainButton.addActionListener(this);
+		mainButton.addActionListener(new ButtonAction());
 		mainButton.setActionCommand("compute");
 		mainButton.setBorder(new EmptyBorder(5,3,1,0));
 		inputPanel.add(mainButton, BorderLayout.SOUTH);
@@ -120,7 +120,7 @@ public class Entscheidungsfinder extends JFrame implements ActionListener {
 		// Only every second field is a JTextField
 		for (int i=1; i<contentPanel.getComponentCount()-1; i=i+2)
 		{
-			JTextField tmp = null;
+			JTextField tmp;
 			if (contentPanel.getComponent(i) instanceof JTextField)
 			{
 				tmp = (JTextField)contentPanel.getComponent(i);
@@ -149,7 +149,8 @@ public class Entscheidungsfinder extends JFrame implements ActionListener {
 		for (int i=1; i<contentPanel.getComponentCount(); i=i+2)
 			contentHeight += contentPanel.getComponent(i).getHeight()+4;
 		c.gridx=0;
-		c.gridy=x+1; validate();
+		c.gridy=x+1;
+		validate();
 		contentPanel.add(Box.createVerticalStrut(contentPanel.getSize().height-contentHeight),c);
 		validate();
 	}
@@ -216,11 +217,9 @@ public class Entscheidungsfinder extends JFrame implements ActionListener {
 		}
 	}
 	
-	public void actionPerformed(ActionEvent e)
-	{
-		if (e.getSource() instanceof JButton)
+	class ButtonAction implements ActionListener {
+		public void actionPerformed(ActionEvent e)
 		{
-			JButton button = (JButton)e.getSource();
 			if (e.getActionCommand().equals("compute"))
 			{
 				resultPanel = new JPanel();
@@ -239,27 +238,25 @@ public class Entscheidungsfinder extends JFrame implements ActionListener {
 				okButton.setMnemonic(KeyEvent.VK_O);
 				okButton.addActionListener(this);
 				okButton.setActionCommand("return");
-				
+
 				resultPanel.add(label, BorderLayout.NORTH);
 				resultPanel.add(result, BorderLayout.CENTER);
 				resultPanel.add(okButton, BorderLayout.SOUTH);
-				
+
 				inputPanel.setVisible(false);
 				getContentPane().remove(inputPanel);
-				super.getContentPane().add(resultPanel);
-				super.validate();
+				getContentPane().add(resultPanel);
+				validate();
 
 				okButton.getRootPane().setDefaultButton(okButton);
-				//innerPanel = tmpPanel;
-				//button.setEnabled(false);
 			}
 			if (e.getActionCommand().equals("return"))
 			{
 				resultPanel.setVisible(false);
-				super.remove(resultPanel);
+				remove(resultPanel);
 				getContentPane().add(inputPanel);
 				inputPanel.setVisible(true);
-				super.validate();
+				validate();
 				getRootPane().setDefaultButton(mainButton);
 			}
 		}
