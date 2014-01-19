@@ -56,6 +56,7 @@ public class Entscheidungsfinder extends JFrame {
 		super();
 		setTitle("Entscheidungsfinder");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setMinimumSize(new java.awt.Dimension(300, 200));
 		
 		//Window elements
 		inputPanel = new JPanel(new BorderLayout());
@@ -71,8 +72,6 @@ public class Entscheidungsfinder extends JFrame {
 		addNewField();
 		validate();
 		innerPanel.add(contentPanel);
-		innerPanel.add(Box.createVerticalStrut(250));
-		innerPanel.add(Box.createHorizontalStrut(20));
 		inputPanel.add(pane, BorderLayout.CENTER);
 		
 		mainButton = new JButton("Was soll ich tun?");
@@ -84,7 +83,8 @@ public class Entscheidungsfinder extends JFrame {
 		
 		getContentPane().add(inputPanel);
 		getRootPane().setDefaultButton(mainButton);
-		pack();
+
+		setSize(text.getPreferredSize().width + 15, 400);
 		setVisible(true);
 	}
 	
@@ -95,16 +95,16 @@ public class Entscheidungsfinder extends JFrame {
 			contentPanel.remove(contentPanel.getComponentCount()-1);
 		
 		JLabel numberx = new JLabel(contentPanel.getComponentCount()/2+1 + ".");
-		JTextField inputx = new JTextField(35);
-		inputx.setMaximumSize(inputx.getPreferredSize());
+		JTextField inputx = new JTextField(1);
 		GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(2,2,2,5);
 		c.gridx = 0;
 		c.gridy = x++;
 		contentPanel.add(numberx, c);
 		c.gridx = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
 		contentPanel.add(inputx, c);
-		c.gridy = x+1;
 		inputx.addKeyListener(new FieldChange());
 		inputx.addFocusListener(new FocusEvents());
 		
