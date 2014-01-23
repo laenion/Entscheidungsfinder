@@ -1,4 +1,7 @@
 <project name="Entscheidungsfinder" default="dist" basedir=".">
+	<!-- Overwrite settings with this file -->
+	<property file="build.properties" />
+
 	<property name="version" value="1.0" />
 	<property name="src" location="." />
 	<property name="build" location="build" />
@@ -6,7 +9,7 @@
 
 	<target name="compile">
 		<mkdir dir="${build}"/>
-		<javac srcdir="${src}" destdir="${build}" includeAntRuntime="false" target="1.2" />
+		<javac srcdir="${src}" destdir="${build}" includeAntRuntime="false" target="1.6" source="1.6" bootclasspath="${buildclasspath}" />
 	</target>
 
 	<target name="dist" depends="compile">
