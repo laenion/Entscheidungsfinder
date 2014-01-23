@@ -26,6 +26,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ResourceBundle;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -47,6 +48,7 @@ public class Entscheidungsfinder extends JFrame {
 	private final JScrollPane pane;
 	private int x;
 	private final JPanel inputPanel;
+	private static final ResourceBundle localization = ResourceBundle.getBundle("localization");
 	private JPanel resultPanel;
 	private final JButton mainButton;
 	
@@ -54,14 +56,14 @@ public class Entscheidungsfinder extends JFrame {
 	Entscheidungsfinder() {
 		//Window settings
 		super();
-		setTitle("Entscheidungsfinder");
+		setTitle(localization.getString("PROGRAM_TITLE"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setMinimumSize(new java.awt.Dimension(300, 200));
 		
 		//Window elements
 		inputPanel = new JPanel(new BorderLayout());
 		inputPanel.addComponentListener(new ResizeEvent());
-		JLabel text = new JLabel("<html><font color=\"#ce3c14;\">Bitte geben Sie hier die M&ouml;glichkeiten an, die zur Verf&uuml;gung stehen:</font></html>");
+		JLabel text = new JLabel("<html><font color=\"#ce3c14;\">" + localization.getString("ENTER_OPTIONS") + "</font></html>");
 		text.setBorder(new EmptyBorder(5,0,5,0));
 		inputPanel.add(text, BorderLayout.NORTH);
 		inputPanel.setBorder(new EmptyBorder(3,3,3,3));
@@ -74,7 +76,7 @@ public class Entscheidungsfinder extends JFrame {
 		innerPanel.add(contentPanel);
 		inputPanel.add(pane, BorderLayout.CENTER);
 		
-		mainButton = new JButton("Was soll ich tun?");
+		mainButton = new JButton(localization.getString("BUTTON_CALCULATE"));
 		mainButton.setMnemonic(KeyEvent.VK_W);
 		mainButton.addActionListener(new ButtonAction());
 		mainButton.setActionCommand("compute");
@@ -225,7 +227,7 @@ public class Entscheidungsfinder extends JFrame {
 				resultPanel = new JPanel();
 				resultPanel.setLayout(new BorderLayout());
 				resultPanel.setBorder(new EmptyBorder(3,3,3,3));
-				JLabel label = new JLabel("Das Ergebnis ist:");
+				JLabel label = new JLabel(localization.getString("RESULT"));
 				label.setBorder(new EmptyBorder(5,0,5,0));
 				JLabel result = new JLabel();
 				if (contentPanel.getComponentCount() > 3) {
@@ -233,8 +235,8 @@ public class Entscheidungsfinder extends JFrame {
 					System.out.println("Decision: " + tmp.getText());
 					result.setText("<html><font color=\"red\" size=\"+4\">" + tmp.getText() + "</font></html>");
 				} else
-					result.setText("NICHTS!");
-				JButton okButton = new JButton("OK");
+					result.setText(localization.getString("NOTHING"));
+				JButton okButton = new JButton(localization.getString("OK"));
 				okButton.setMnemonic(KeyEvent.VK_O);
 				okButton.addActionListener(this);
 				okButton.setActionCommand("return");

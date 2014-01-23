@@ -10,6 +10,11 @@
 	<target name="compile">
 		<mkdir dir="${build}"/>
 		<javac srcdir="${src}" destdir="${build}" includeAntRuntime="false" target="1.6" source="1.6" bootclasspath="${buildclasspath}" />
+		<copy todir="${build}">
+			<fileset dir=".">
+				<include name="*.properties" />
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="dist" depends="compile">
