@@ -1,25 +1,36 @@
-<project name="Entscheidungsfinder" default="dist" basedir=".">
+<project name="Entscheidungsfinder" default="desktop" basedir=".">
 	<!-- Overwrite settings with this file -->
 	<property file="build.properties" />
 
 	<property name="version" value="1.0" />
-	<property name="src" location="." />
-	<property name="build" location="build" />
-	<property name="dist"  location="dist" />
+	<property name="src_desktop" location="desktop" />
+	<property name="src_j2me" location="j2me" />
+	<property name="build_dir" location="build" />
+	<property name="dist_dir"  location="dist" />
 
-	<target name="compile">
-		<mkdir dir="${build}"/>
-		<javac srcdir="${src}" destdir="${build}" includeAntRuntime="false" target="1.6" source="1.6" bootclasspath="${buildclasspath}" />
-		<copy todir="${build}">
-			<fileset dir=".">
-				<include name="*.properties" />
-			</fileset>
-		</copy>
+	<macrodef name="build">
+		<attribute name="bootclasspath" />
+		<attribute name="src" />
+		<attribute name="java-compat" />
+		<attribute name="build-dir" />
+		<sequential>
+			<mkdir dir="@{build-dir}"/>
+			<javac srcdir="@{src}" destdir="@{build-dir}" includeAntRuntime="false" target="@{java-compat}" source="@{java-compat}" bootclasspath="@{bootclasspath}" />
+			<copy todir="@{build-dir}">
+				<fileset dir=".">
+					<include name="localization*.properties" />
+				</fileset>
+			</copy>
+		</sequential>
+	</macrodef>
+
+	<target name="build_desktop">
+		<build bootclasspath="${buildclasspath}" src="${src_desktop}" java-compat="1.6" build-dir="${build_dir}/${src_desktop}" />
 	</target>
 
-	<target name="dist" depends="compile">
-		<mkdir dir="${dist}" />
-		<jar jarfile="${dist}/Entscheidungsfinder.jar" basedir="${build}">
+	<target name="dist_desktop" depends="build_desktop">
+		<mkdir dir="${dist_dir}" />
+		<jar jarfile="${dist_dir}/Entscheidungsfinder.jar" basedir="${build_dir}/${src_desktop}">
 			<manifest>
 				<attribute name="Main-Class" value="Entscheidungsfinder" />
 				<attribute name="Codebase" value="*" />
@@ -28,8 +39,39 @@
 		</jar>
 	</target>
 
-	<target name="clean">
-		<delete dir="${build}" />
-		<delete dir="${dist}" />
+	<!-- Compile for J2ME capable mobile devices; j2me_sdk_path has to be set in build.properties. -->
+	<target name="build_j2me">
+		<build bootclasspath="${j2me_sdk_path}/lib/cldcapi11.jar:${j2me_sdk_path}/lib/midpapi20.jar" src="${src_j2me}" java-compat="1.3" build-dir="${build_dir}/${src_j2me}" />
+		<echo>Preverifying classes</echo>
+		<exec executable="${j2me_sdk_path}/bin/preverify">
+			<arg value="-classpath" />
+			<arg value="${j2me_sdk_path}/lib/cldcapi11.jar:${j2me_sdk_path}/lib/midpapi20.jar" />
+			<arg value="-d" />
+			<arg value="${build_dir}/${src_j2me}" />
+			<arg value="${build_dir}/${src_j2me}" />
+		</exec>
 	</target>
+
+	<target name="dist_j2me" depends="build_j2me">
+		<mkdir dir="${dist_dir}" />
+		<jar jarfile="${dist_dir}/EntscheidungsfinderME.jar" basedir="${build_dir}/${src_j2me}">
+			<manifest>
+				<attribute name="MIDlet-1" value="Entscheidungsfinder, ,EntscheidungsfinderME" />
+				<attribute name="MIDlet-Name" value="Entscheidungsfinder" />
+				<attribute name="MIDlet-Version" value="1.0" />
+				<attribute name="MIDlet-Vendor" value="digitalimagecorp.de" />
+				<attribute name="MicroEdition-Profile" value="MIDP-2.0" />
+				<attribute name="MicroEdition-Configuration" value="CLDC-1.1" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build_dir}" />
+		<delete dir="${dist_dir}" />
+	</target>
+
+	<target name="desktop" depends="dist_desktop" />
+	<target name="j2me" depends="dist_j2me" />
+	<target name="all" depends="desktop, j2me" />
 </project>
